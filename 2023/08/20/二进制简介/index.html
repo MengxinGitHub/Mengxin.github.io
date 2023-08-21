@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+
+
+<html theme="dark" showBanner="true" hasBanner="true" > 
+<link href="/fontawesome/css/fontawesome.css" rel="stylesheet">
+<link href="/fontawesome/css/brands.css" rel="stylesheet">
+<link href="/fontawesome/css/solid.css" rel="stylesheet">
+<script src="/js/color.global.min.js" ></script>
+<script src="/js/load-settings.js" ></script>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=true"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'true');
+</script>
+<!-- End Google Analytics -->
+
+  
+  <title>二进制简介 | Mr.萌辛</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="进制&amp;emsp;&amp;emsp;进制（也称为数制）是用于表达和操作数字的一套规则或体系。在每种进制中，有一个固定的基数来确定可用的数字或符号。以十进制为例，其基数是10，使用从0到9的数字进行表示。而在二进制中，基数是2，仅使用0和1两个数字。进制在多个领域有着各自的应用和重要性，如日常生活中的十进制和计算机科学中的二进制，这些进制是数学和信息科学的核心概念。 &amp;emsp;&amp;emsp;对于一些人来说，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二进制简介">
+<meta property="og:url" content="https://mengxin.github.io/2023/08/20/%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%AE%80%E4%BB%8B/">
+<meta property="og:site_name" content="Mr.萌辛">
+<meta property="og:description" content="进制&amp;emsp;&amp;emsp;进制（也称为数制）是用于表达和操作数字的一套规则或体系。在每种进制中，有一个固定的基数来确定可用的数字或符号。以十进制为例，其基数是10，使用从0到9的数字进行表示。而在二进制中，基数是2，仅使用0和1两个数字。进制在多个领域有着各自的应用和重要性，如日常生活中的十进制和计算机科学中的二进制，这些进制是数学和信息科学的核心概念。 &amp;emsp;&amp;emsp;对于一些人来说，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mengxin.github.io/assets/%E6%B1%87%E7%BC%96/%E8%BF%9B%E5%88%B6/%E5%BF%AB%E9%80%9F%E8%AE%B0%E5%BF%86%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%92%8C%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6%E7%9A%84%E4%BA%92%E7%9B%B8%E8%BD%AC%E6%8D%A2.png">
+<meta property="article:published_time" content="2023-08-20T11:13:06.693Z">
+<meta property="article:modified_time" content="2023-08-21T15:10:24.951Z">
+<meta property="article:author" content="Mr.萌辛">
+<meta property="article:tag" content="二进制">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mengxin.github.io/assets/%E6%B1%87%E7%BC%96/%E8%BF%9B%E5%88%B6/%E5%BF%AB%E9%80%9F%E8%AE%B0%E5%BF%86%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%92%8C%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6%E7%9A%84%E4%BA%92%E7%9B%B8%E8%BD%AC%E6%8D%A2.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Mr.萌辛" type="application/atom+xml">
+  
+  
+    <link rel="icon" media="(prefers-color-scheme: light)" href="/images/favicon-light-32.png" sizes="32x32">
+    <link rel="icon" media="(prefers-color-scheme: light)" href="/images/favicon-light-128.png" sizes="128x128">
+    <link rel="icon" media="(prefers-color-scheme: light)" href="/images/favicon-light-180.png" sizes="180x180">
+    <link rel="icon" media="(prefers-color-scheme: light)" href="/images/favicon-light-192.png" sizes="192x192">
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="/images/favicon-dark-32.png" sizes="32x32">
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="/images/favicon-dark-128.png" sizes="128x128">
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="/images/favicon-dark-180.png" sizes="180x180">
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="/images/favicon-dark-192.png" sizes="192x192">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  
+  
+    
+<div id="banner" class="">
+  <img src="/assets/%E5%B0%8F%E4%B8%91%E6%A8%AA%E5%B9%85.jpg" itemprop="image">
+  <div id="banner-dim"></div>
+</div>
+ 
+   
+  <div id="main-grid" class="shadow   ">
+    <div id="nav" class=""  >
+      <navbar id="navbar">
+  <nav id="title-nav">
+    <a href="/">
+      <div id="vivia-logo">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div>Mr.萌辛 </div>
+    </a>
+  </nav>
+  <nav id="main-nav">
+    
+      <a class="main-nav-link" href="/">Home</a>
+    
+      <a class="main-nav-link" href="/archives">Archives</a>
+    
+      <a class="main-nav-link" href="/about">About</a>
+    
+  </nav>
+  <nav id="sub-nav">
+    <a id="theme-btn" class="nav-icon">
+      <span class="material-symbols-rounded light-mode-icon">wb_sunny</span>
+      <span class="material-symbols-rounded dark-mode-icon">dark_mode</span>
+    </a>
+    
+      <a id="nav-rss-link" class="nav-icon mobile-hide" href="/atom.xml" title="RSS 订阅">
+        <span class="material-symbols-rounded rss">rss_feed</span>
+      </a>
+    
+    <a id="nav-search-btn" class="nav-icon" title="搜索" style="display: none;">
+      <span class="material-symbols-rounded">search</span>
+    </a>
+    <div id="nav-menu-btn" class="nav-icon">
+      <span class="material-symbols-rounded">menu</span>
+    </div>
+  </nav>
+</navbar>
+<div id="nav-dropdown" class="hidden">
+  <div id="dropdown-link-list">
+    
+      <a class="nav-dropdown-link" href="/">Home</a>
+    
+      <a class="nav-dropdown-link" href="/archives">Archives</a>
+    
+      <a class="nav-dropdown-link" href="/about">About</a>
+    
+    
+      <a class="nav-dropdown-link" href="/atom.xml" title="RSS 订阅">RSS</a>
+     
+    </div>
+</div>
+<script>
+  let dropdownBtn = document.getElementById("nav-menu-btn");
+  let dropdownEle = document.getElementById("nav-dropdown");
+  dropdownBtn.onclick = function() {
+    dropdownEle.classList.toggle("hidden");
+  }
+</script>
+    </div>
+    <div id="sidebar-wrapper">
+      <sidebar id="sidebar">
+  
+    <div class="widget-wrap">
+  <div class="info-card">
+    <div class="avatar">
+      
+        <image src=/assets/%E5%A4%B4%E5%83%8F.jpg></image>
+      
+      <div class="img-dim"></div>
+    </div>
+    <div class="info">
+      <div class="username">Mr.萌辛 </div>
+      <div class="dot"></div>
+      <div class="subtitle">拿命学逆向 </div>
+      <div class="link-list">
+        
+          <a class="link-btn" target="_blank" rel="noopener" href="https://twitter.com" title="Twitter"><i class="fa-brands fa-twitter"></i></a>
+        
+          <a class="link-btn" target="_blank" rel="noopener" href="https://store.steampowered.com" title="Steam"><i class="fa-brands fa-steam"></i></a>
+        
+          <a class="link-btn" target="_blank" rel="noopener" href="https://github.com" title="GitHub"><i class="fa-brands fa-github"></i></a>
+         
+      </div>  
+    </div>
+  </div>
+</div>
+
+  
+  <div class="sticky">
+    
+      
+
+
+  <div class="widget-wrap">
+    <div class="widget">
+      <h3 class="widget-title">分类</h3>
+      <div class="category-box">
+            <a class="category-link" href="/categories/%E4%BA%8C%E8%BF%9B%E5%88%B6/">
+                二进制
+                <div class="category-count">2</div>
+            </a>
+        </div>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap">
+    <div class="widget">
+      <h3 class="widget-title">标签</h3>
+      <ul class="widget-tag-list" itemprop="keywords"><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" rel="tag">二进制</a></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap">
+    <div class="widget">
+      <h3 class="widget-title">归档</h3>
+      
+      
+        <a class="archive-link" href="/archives/2023/08 ">
+          八月 2023 
+          <div class="archive-count">3 </div>
+        </a>
+      
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap">
+    <div class="widget">
+      <h3 class="widget-title">最新文章</h3>
+      <ul>
+        
+          <a class="recent-link" href="/2023/08/21/%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9A%84%E8%BF%90%E7%AE%97/" title="二进制的运算" >
+            <div class="recent-link-text">
+              二进制的运算
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/08/20/%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%AE%80%E4%BB%8B/" title="二进制简介" >
+            <div class="recent-link-text">
+              二进制简介
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/08/20/hello-world/" title="你好世界" >
+            <div class="recent-link-text">
+              你好世界
+            </div>
+          </a>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+  </div>
+</sidebar>
+    </div>
+    <div id="content-body">
+       
+
+<article id="post-二进制简介" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  
+    
+   
+  <div class="article-inner">
+    <div class="article-main">
+      <header class="article-header">
+        
+<div class="main-title-bar">
+  <div class="main-title-dot"></div>
+  
+    
+      <h1 class="p-name article-title" itemprop="headline name">
+        二进制简介
+      </h1>
+    
+  
+</div>
+
+        <div class='meta-info-bar'>
+          <div class="meta-info">
+  <time class="dt-published" datetime="2023-08-20T11:13:06.693Z" itemprop="datePublished">2023年08月20日</time>
+</div>
+          <div class="need-seperator meta-info">
+            <div class="meta-cate-flex">
+  
+  <a class="meta-cate-link" href="/categories/%E4%BA%8C%E8%BF%9B%E5%88%B6/">二进制</a>
+   
+</div>
+  
+          </div>
+          <div class="wordcount need-seperator meta-info">
+            1.4k 词 
+          </div>
+        </div>
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" rel="tag">二进制</a></li></ul>
+
+      </header>
+      <div class="e-content article-entry" itemprop="articleBody">
+        
+          <h1 id="进制"><a href="#进制" class="headerlink" title="进制"></a>进制</h1><p>&emsp;&emsp;进制（也称为数制）是用于表达和操作数字的一套规则或体系。在每种进制中，有一个固定的基数来确定可用的数字或符号。以十进制为例，其基数是10，使用从0到9的数字进行表示。而在二进制中，基数是2，仅使用0和1两个数字。进制在多个领域有着各自的应用和重要性，如日常生活中的十进制和计算机科学中的二进制，这些进制是数学和信息科学的核心概念。</p>
+<p>&emsp;&emsp;对于一些人来说，可能会有疑问：既然日常生活中使用的是十进制，为什么计算机内部要用二进制表示数据呢？这实际上与电子工程和信息处理有关。计算机的硬件电路更容易识别两种状态——   <code>高电平和低电平</code>，这恰好与二进制的0和1相对应。因此，二进制不仅在逻辑上简单，而且在硬件实现上也更为经济和高效。简而言之，计算机使用二进制是因为它与硬件电路的设计和操作高度匹配，同时也简化了信息处理和存储。</p>
+<h2 id="进制的本质"><a href="#进制的本质" class="headerlink" title="进制的本质"></a>进制的本质</h2><p>&emsp;&emsp;了解了进制的概念后,那么我们应该如何去了解进制的本质呢,为什么我们天生对十进制这么熟悉呢!是因为与生俱来的吗? 当然不是,数学差的人应该都忘不了,小时候背<code>加法表``乘法表</code>的痛苦日子了吧!所以这里就引出了我的概念,进制的本质就是<code>查表</code>!!<br>&emsp;&emsp;为什么说是查表呢!我这里举个例子,比如我现在问你3 * 4 &#x3D; ? 你能马上的想到3 * 4 &#x3D; 12; 那么我49849 * 56165 &#x3D; ? ; 一下子一下子算不出来吧!我们之所以能马上的得出答案其实就是因为,我们心中有那张表!这样的话对于我们之后学习进制就会特别轻松</p>
+<h2 id="如何学习进制"><a href="#如何学习进制" class="headerlink" title="如何学习进制"></a>如何学习进制</h2><h3 id="1-理解进制"><a href="#1-理解进制" class="headerlink" title="1. 理解进制"></a>1. 理解进制</h3><p>&emsp;&emsp;我们最常见的进制就是十进制,什么叫十进制呢 ?</p>
+<ul>
+<li><strong>十进制（Decimal）</strong>: 基数为10，使用0-9的数字，(0 1 2 3 4 5 6 7 8 9)</li>
+<li><strong>二进制（Binary）</strong>: 基数为2，只用0和1 ( 0 1 )\</li>
+</ul>
+<p>那么问题来了!什么是八进制 ? 从上面的规律就能得到!</p>
+<ul>
+<li><strong>八进制（Octal）</strong>: 基数为8，使用0-7的数字</li>
+<li><strong>十六进制（Hexadecimal）</strong>: 基数为16，使用0-9以及A-F（或a-f）的字符</li>
+</ul>
+<p>&emsp;&emsp;对于我个人的<strong>粗鄙</strong>的理解而言, 二进制就是2个字符, 十进制就是有10个字符….一百进制就是有100个字符.</p>
+<h3 id="2-学习进制"><a href="#2-学习进制" class="headerlink" title="2. 学习进制"></a>2. 学习进制</h3><p>&emsp;&emsp;我们最常见的十进制,一共有10个字符,难道我们只能表示10个数吗?当然不是!!!我们还有 11 12 13 ….是无限大的! 幼儿园的老师都交过我们!要逢十进一,那么二进制呢? 当然是逢二进一! 八进制呢? 当然是逢八进一了…<br>&emsp;&emsp;由此可得出我们二进制和十六进制的表格\</p>
+<table>
+<thead>
+<tr>
+<th>二进制</th>
+<th>0000</th>
+<th>0001</th>
+<th>0010</th>
+<th>0011</th>
+<th>0100</th>
+<th>0101</th>
+<th>0110</th>
+<th>0111</th>
+<th>1000</th>
+<th>1001</th>
+<th>1010</th>
+<th>1011</th>
+<th>1100</th>
+<th>1101</th>
+<th>1110</th>
+<th>1111</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>十进制</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+</tr>
+<tr>
+<td>十六进制</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>A</td>
+<td>B</td>
+<td>C</td>
+<td>D</td>
+<td>E</td>
+<td>F</td>
+</tr>
+</tbody></table>
+<p>&emsp;&emsp;所以只要记住这张表!逆向的时候才会<code>逞心如意</code>.可能刚开始学的小伙伴可能对二进制和十六进制比较难记(其实是我自己记的时候老费劲了)所以我推荐<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1gB4y1H7ib/?share_source=copy_web&vd_source=030346ab0f1d47c8c111de7f6e8612ca">侯老师</a>这里的办法真的是帮了大忙!<br>&emsp;&emsp;这里我简单的教一下大家,不太理解的兄弟们可以看一下相关的<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1gB4y1H7ib/?share_source=copy_web&vd_source=030346ab0f1d47c8c111de7f6e8612ca">视频</a>.<br>&emsp;&emsp;</p>
+<h2 id="快速记忆二进制和十六进制的互相转换"><a href="#快速记忆二进制和十六进制的互相转换" class="headerlink" title="快速记忆二进制和十六进制的互相转换"></a>快速记忆二进制和十六进制的互相转换</h2><p>&emsp;&emsp;我用二进制(1010)给大家做个例子,我们把二进制的(1010)<code>第0位看成1(2的0次方)</code>,<code>第2位看成2(2的1次方)</code>,<code>第3位看成4(2的2次方)</code>,<code>第4位看成8(2的3次方)</code>.这里二进制(1010)有1的地方我们看成是有值的,0的地方看成没值的,(1010)我们就可以看成8+0+2+0 &#x3D; 十进制的10 &#x3D; A</p>
+<ul>
+<li>图解<img src="/../assets/%E6%B1%87%E7%BC%96/%E8%BF%9B%E5%88%B6/%E5%BF%AB%E9%80%9F%E8%AE%B0%E5%BF%86%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%92%8C%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6%E7%9A%84%E4%BA%92%E7%9B%B8%E8%BD%AC%E6%8D%A2.png"></li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>在本篇文章中，我们从多个角度详细探讨了进制这一数学和信息科学中的核心概念。</p>
+<ol>
+<li><p><strong>进制概念</strong>: 我们首先介绍了什么是进制，以及为什么不同领域（比如计算机科学和日常生活）会用到不同的进制。</p>
+</li>
+<li><p><strong>进制的本质</strong>: 我们探究了进制的本质，即“查表”，并解释了为什么我们能够快速进行一些特定的数学运算。</p>
+</li>
+<li><p><strong>如何学习进制</strong>: 我们提供了一些方法和技巧来学习和理解各种进制，特别是二进制和十六进制。</p>
+</li>
+<li><p><strong>实用工具</strong>: 我们给出了二进制、十进制和十六进制之间的转换表，并提供了一种简单但有效的记忆方法。</p>
+</li>
+<li><p><strong>快速记忆与转换</strong>: 介绍了一种快速将二进制和十六进制互相转换的方法，提供了图解和示例来帮助理解。</p>
+</li>
+</ol>
+<p>通过这篇文章，你应该能够更深入地了解进制，以及它在数学和信息科学中的应用和重要性。希望这能为你以后的学习或工作提供有用的信息和工具。</p>
+
+        
+      </div>
+
+         
+    </div>
+    
+     
+  </div>
+  
+    
+<nav id="article-nav">
+  <a class="article-nav-btn left "
+    
+      href="/2023/08/21/%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9A%84%E8%BF%90%E7%AE%97/"
+      title="二进制的运算"
+     >
+    <i class="fa-solid fa-angle-left"></i>
+    <p class="title-text">
+      
+        二进制的运算
+        
+    </p>
+  </a>
+  <a class="article-nav-btn right "
+    
+      href="/2023/08/20/hello-world/"
+      title="你好世界"
+     >
+
+    <p class="title-text">
+      
+        你好世界
+        
+    </p>
+    <i class="fa-solid fa-angle-right"></i>
+  </a>
+</nav>
+
+
+  
+</article>
+
+
+  
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <div id="comment-card" class="comment-card">
+    <div class="main-title-bar">
+      <div class="main-title-dot"></div>
+      <div class="main-title">留言 </div>
+    </div>
+    <div id="vcomments"></div>
+  </div>
+  <script>
+      new Valine({"enable":true,"appId":"9rQGfcAqFLYp5q7xBw6nqlUn-gzGzoHsz","appKey":"4ybh6Op8zAdpYdjp6zeJ4tZR","placeholder":"尽情发言吧","pageSize":10,"highlight":true,"serverURLs":null,"el":"#vcomments"});
+  </script>
+ 
+    </div>
+    <div id="footer-wrapper">
+      <footer id="footer">
+  
+  <div id="footer-info" class="inner">
+    
+      <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src="https://img.shields.io/badge/Copyright-BY--Mengxin%204.0-d42328?style=flat&amp;logo=Claris"></a>
+    
+    &copy; 2023 Mr.萌辛<br>
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & Theme <a target="_blank" rel="noopener" href="https://github.com/saicaca/hexo-theme-vivia">Vivia</a>
+  </div>
+</footer>
+
+    </div>
+    <div class="back-to-top-wrapper">
+    <button id="back-to-top-btn" class="back-to-top-btn" onclick="topFunction()">
+        <span class="material-symbols-rounded">keyboard_arrow_up</span>
+    </button>
+</div>
+
+<script>
+    function topFunction() {
+        window.scroll({ top: 0, behavior: 'smooth' });
+    }
+    let btn = document.getElementById('back-to-top-btn');
+    function scrollFunction() {
+        if (document.body.scrollTop > 600 || document.documentElement.scrollTop > 600) {
+            btn.style.opacity = 1;
+        } else {
+            btn.style.opacity = 0;
+        }
+    }
+    window.onscroll = function() {
+        scrollFunction();
+    }
+</script>
+
+  </div>
+  <script src="/js/light-dark-switch.js"></script>
+</body>
+</html>
