@@ -164,6 +164,11 @@
                 进制
                 <div class="category-count">2</div>
             </a>
+        
+            <a class="category-link" href="/categories/%E6%B1%87%E7%BC%96/">
+                汇编
+                <div class="category-count">1</div>
+            </a>
         </div>
     </div>
   </div>
@@ -174,7 +179,7 @@
   <div class="widget-wrap">
     <div class="widget">
       <h3 class="widget-title">标签</h3>
-      <ul class="widget-tag-list" itemprop="keywords"><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" rel="tag">二进制</a></li></ul>
+      <ul class="widget-tag-list" itemprop="keywords"><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E5%AF%84%E5%AD%98%E5%99%A8/" rel="tag">寄存器</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E8%BF%9B%E5%88%B6/" rel="tag">进制</a></li></ul>
     </div>
   </div>
 
@@ -188,7 +193,7 @@
       
         <a class="archive-link" href="/archives/2023/08 ">
           八月 2023 
-          <div class="archive-count">3 </div>
+          <div class="archive-count">4 </div>
         </a>
       
     </div>
@@ -202,13 +207,19 @@
       <h3 class="widget-title">最新文章</h3>
       <ul>
         
-          <a class="recent-link" href="/2023/08/21/%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9A%84%E8%BF%90%E7%AE%97/" title="二进制的运算" >
+          <a class="recent-link" href="/2023/08/22/23.8.22%E9%80%9A%E7%94%A8%E5%AF%84%E5%AD%98%E5%99%A8/" title="32位通用寄存器" >
             <div class="recent-link-text">
-              二进制的运算
+              32位通用寄存器
             </div>
           </a>
         
-          <a class="recent-link" href="/2023/08/20/%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%AE%80%E4%BB%8B/" title="进制简介" >
+          <a class="recent-link" href="/2023/08/21/23.8.21%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9A%84%E8%BF%90%E7%AE%97/" title="进制的运算" >
+            <div class="recent-link-text">
+              进制的运算
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/08/20/23.8.21%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%AE%80%E4%BB%8B/" title="进制简介" >
             <div class="recent-link-text">
               进制简介
             </div>
@@ -232,7 +243,7 @@
       
    
 
-<article id="post-二进制的运算" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+<article id="post-23.8.22通用寄存器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
    
   <div class="article-inner">
     <div class="article-main">
@@ -243,7 +254,101 @@
   
     
       <h1 itemprop="name">
-        <a class="p-name article-title" href="/2023/08/21/%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9A%84%E8%BF%90%E7%AE%97/">二进制的运算</a>
+        <a class="p-name article-title" href="/2023/08/22/23.8.22%E9%80%9A%E7%94%A8%E5%AF%84%E5%AD%98%E5%99%A8/">32位通用寄存器</a>
+      </h1>
+    
+  
+</div>
+
+        <div class='meta-info-bar'>
+          <div class="meta-info">
+  <time class="dt-published" datetime="2023-08-22T09:39:23.901Z" itemprop="datePublished">2023年08月22日</time>
+</div>
+          <div class="need-seperator meta-info">
+            <div class="meta-cate-flex">
+  
+  <a class="meta-cate-link" href="/categories/%E6%B1%87%E7%BC%96/">汇编</a>
+   
+</div>
+  
+          </div>
+          <div class="wordcount need-seperator meta-info">
+            3.9k 词 
+          </div>
+        </div>
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AF%84%E5%AD%98%E5%99%A8/" rel="tag">寄存器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%9B%E5%88%B6/" rel="tag">进制</a></li></ul>
+
+      </header>
+      <div class="e-content article-entry" itemprop="articleBody">
+        
+          <div class="truncate-text">
+            32位通用寄存器1. 定义和用途：了解什么是寄存器以及其在CPU中的作用。
+定义：
+
+寄存器是一小块非常快速的计算机内存，直接位于CPU内部。它们作为CPU和其他硬件之间的数据交换的缓冲区。
+
+
+用途：
+
+数据缓存：寄存器提供一个地方，用于临时存储正在进行运算或数据转移的数据。
+快速运算：因为寄存器是CPU内部的，对它们的读写操作比对主内存快得多。
+指令执行：寄存器用于存储即将执行的指令和指令的结果。
+程序计数：特定寄存器用于追踪即将执行的指令的地址。
+状态标记：某些寄存器用于存储关于前一个运算结果的信息，如是否产生了进位或溢出等。
+
+
+
+1.2 类型：分辨通用寄存器与特殊寄存器的区别。
+通用寄存器：
+
+这类寄存器主要用于通用计算和数据存储。
+在32位x86架构中，主要的通用寄存器包括EAX, EBX, ECX, EDX, ESI, EDI。
+通用寄存器通常可用于多种类型的数据操作，如加法、减法、数据移动等。
+
+
+特殊寄存器：
+
+这类寄存器用于特定目的和操作。
+例如，ESP和EBP用于堆栈操作，EIP（指令指针）用于跟踪下一个要执行的指令。
+其他特殊寄存器还包括状态标志寄存器（E...  
+          </div>
+        
+      </div>
+
+         
+    </div>
+    
+     
+    <a class="right-panel  non-pic  "
+      
+      href="/2023/08/22/23.8.22%E9%80%9A%E7%94%A8%E5%AF%84%E5%AD%98%E5%99%A8/" 
+    >
+       
+      <i class="fa-solid fa-angle-right non-pic"></i>
+       
+    </a>
+     
+  </div>
+  
+</article>
+
+ 
+
+   
+
+<article id="post-23.8.21二进制的运算" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+   
+  <div class="article-inner">
+    <div class="article-main">
+      <header class="article-header">
+        
+<div class="main-title-bar">
+  <div class="main-title-dot"></div>
+  
+    
+      <h1 itemprop="name">
+        <a class="p-name article-title" href="/2023/08/21/23.8.21%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9A%84%E8%BF%90%E7%AE%97/">进制的运算</a>
       </h1>
     
   
@@ -266,7 +371,7 @@
           </div>
         </div>
         
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" rel="tag">二进制</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%9B%E5%88%B6/" rel="tag">进制</a></li></ul>
 
       </header>
       <div class="e-content article-entry" itemprop="articleBody">
@@ -289,7 +394,7 @@
      
     <a class="right-panel  non-pic  "
       
-      href="/2023/08/21/%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9A%84%E8%BF%90%E7%AE%97/" 
+      href="/2023/08/21/23.8.21%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9A%84%E8%BF%90%E7%AE%97/" 
     >
        
       <i class="fa-solid fa-angle-right non-pic"></i>
@@ -304,7 +409,7 @@
 
    
 
-<article id="post-二进制简介" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+<article id="post-23.8.21二进制简介" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
    
   <div class="article-inner">
     <div class="article-main">
@@ -315,7 +420,7 @@
   
     
       <h1 itemprop="name">
-        <a class="p-name article-title" href="/2023/08/20/%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%AE%80%E4%BB%8B/">进制简介</a>
+        <a class="p-name article-title" href="/2023/08/20/23.8.21%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%AE%80%E4%BB%8B/">进制简介</a>
       </h1>
     
   
@@ -338,7 +443,7 @@
           </div>
         </div>
         
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" rel="tag">二进制</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%9B%E5%88%B6/" rel="tag">进制</a></li></ul>
 
       </header>
       <div class="e-content article-entry" itemprop="articleBody">
@@ -357,7 +462,7 @@
      
     <a class="right-panel  non-pic  "
       
-      href="/2023/08/20/%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%AE%80%E4%BB%8B/" 
+      href="/2023/08/20/23.8.21%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%AE%80%E4%BB%8B/" 
     >
        
       <i class="fa-solid fa-angle-right non-pic"></i>
