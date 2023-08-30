@@ -39,7 +39,7 @@
 <meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/SystemServiceTable/OpenPrcoess%E5%86%85%E6%A0%B8%E5%87%BD%E6%95%B0%E5%9C%B0%E5%9D%80.png">
 <meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/SystemServiceTable/u.png">
 <meta property="article:published_time" content="2023-08-30T08:55:24.836Z">
-<meta property="article:modified_time" content="2023-08-30T10:47:43.732Z">
+<meta property="article:modified_time" content="2023-08-30T10:58:08.660Z">
 <meta property="article:author" content="Mr.萌辛">
 <meta property="article:tag" content="系统调用">
 <meta property="article:tag" content="API">
@@ -320,7 +320,7 @@
 <li><p><strong>12:31位 - 未使用</strong>：这20位目前并未使用，但留作将来可能的需求或扩展。</p>
 </li>
 </ol>
-<h4 id="系统服务号图解"><a href="#系统服务号图解" class="headerlink" title="系统服务号图解:"></a>系统服务号图解:</h4><p><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/SystemServiceTable/%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1%E5%8F%B7.jpg">\</p>
+<h4 id="系统服务号图解"><a href="#系统服务号图解" class="headerlink" title="系统服务号图解:"></a>系统服务号图解:</h4><p><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/SystemServiceTable/%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1%E5%8F%B7.jpg"></p>
 <h2 id="SystemServiceTable-系统服务表-结构"><a href="#SystemServiceTable-系统服务表-结构" class="headerlink" title="SystemServiceTable(系统服务表)结构"></a>SystemServiceTable(系统服务表)结构</h2><p>在Windows操作系统中，系统服务描述符表（System Service Descriptor Table, SSDT）是一个关键的数据结构，用于映射系统服务号（System Service Numbers, SSN）到相应的内核模式处理函数。这个表基本上是一个函数指针数组，索引就是系统服务号。</p>
 <p>虽然具体的实现和字段可能因不同版本的Windows而有所不同，一般情况下，一个简化的<code>SystemServiceTable</code>（或SSDT）结构可能包括以下元素：</p>
 <ol>
@@ -366,13 +366,13 @@
 
 <p><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/SystemServiceTable/ssdt.png"><br>&emsp;&emsp;我们可以看到第一个成员的<strong>ServiceTable</strong>，<strong>Count</strong>，<strong>ServiceLimit</strong>，<strong>ArgmentTable</strong>字段,但是细心的小伙伴可能有疑问,我们不是应该有两张表吗!还有一张表去哪里了?另一张表我们也可以通过另一个指令来找到,指令如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd KeServiceDescriptorTableShadow</span><br></pre></td></tr></table></figure>
-<p><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/SystemServiceTable/SSDTShadow.png">\</p>
+<p><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/SystemServiceTable/SSDTShadow.png"></p>
 <blockquote>
 <p>**注意:**如果一个进程没有使用GDI相关的API，那么这张系统服务表中的函数地址表将不会被加载到物理内存中。因此，在这种情况下，该表内的所有函数地址都将是无效的。</p>
 </blockquote>
 <h3 id="通过windbg查询内核函数地址"><a href="#通过windbg查询内核函数地址" class="headerlink" title="通过windbg查询内核函数地址"></a>通过windbg查询内核函数地址</h3><p>&emsp;&emsp;通过之前的案例我们大概了解了我们的操作系统是如何查找内核的函数地址后,我们当然也需要手动实践一下,我们还是依旧通过我们的<code>WinDbg</code>,至于查什么函数呢!我们基于之前分析的<code>OpenProcess</code>我们已知它的服务号为<code>0xBE</code>.</p>
 <ol>
-<li>首先我们找到我们的SSDT的地址\<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd KeServiceDescriptorTable</span><br></pre></td></tr></table></figure>
+<li>首先我们找到我们的SSDT的地址<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd KeServiceDescriptorTable</span><br></pre></td></tr></table></figure>
 结果如下:<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/SystemServiceTable/1.png"><br>我们得到了<code>ServiceTable</code>地址为:<code>0x83e79e3c</code>\</li>
 <li>得到<code>OpenProcess</code>内核函数地址<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd 83e79e3c + BE * 4</span><br></pre></td></tr></table></figure>
 ServiceTable的地址 + 系统服务号 * 函数的大小<br>结果如下:<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/SystemServiceTable/OpenPrcoess%E5%86%85%E6%A0%B8%E5%87%BD%E6%95%B0%E5%9C%B0%E5%9D%80.png"><br>那么如何验证我们这个函数地址的是否正确呢?我能还是用到一个指令<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">u 8402dc8f</span><br></pre></td></tr></table></figure>
