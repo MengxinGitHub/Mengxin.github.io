@@ -27,7 +27,7 @@
   <meta name="description" content="SystemServiceTable(系统服务表)&amp;emsp;&amp;emsp;在之前的学习阶段，我们探究了程序如何从用户态（3环）跨越到内核态（0环）的流程。在这一过程中，重要的一环是“保存现场”，其中所有用户态下的重要寄存器都被备份到一个称为 _Trap_Frame 的结构体内。这是为了确保在完成系统调用后能够完整地恢复程序的状态。 &amp;emsp;&amp;emsp;一个不可或缺的细节是，程序会将一个特定的“">
 <meta property="og:type" content="article">
 <meta property="og:title" content="通过SystemServiceTable找到对应函数">
-<meta property="og:url" content="https://blog.mxlink.top/2023/08/30/23.8.30SystemServiceTable/">
+<meta property="og:url" content="https://blog.mxlink.top/2023/08/30/23.8.30%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8_SystemServiceTable/">
 <meta property="og:site_name" content="Mr.萌辛">
 <meta property="og:description" content="SystemServiceTable(系统服务表)&amp;emsp;&amp;emsp;在之前的学习阶段，我们探究了程序如何从用户态（3环）跨越到内核态（0环）的流程。在这一过程中，重要的一环是“保存现场”，其中所有用户态下的重要寄存器都被备份到一个称为 _Trap_Frame 的结构体内。这是为了确保在完成系统调用后能够完整地恢复程序的状态。 &amp;emsp;&amp;emsp;一个不可或缺的细节是，程序会将一个特定的“">
 <meta property="og:locale" content="zh_CN">
@@ -39,7 +39,7 @@
 <meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/SystemServiceTable/OpenPrcoess%E5%86%85%E6%A0%B8%E5%87%BD%E6%95%B0%E5%9C%B0%E5%9D%80.png">
 <meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/SystemServiceTable/u.png">
 <meta property="article:published_time" content="2023-08-30T08:55:24.836Z">
-<meta property="article:modified_time" content="2023-08-30T10:58:08.660Z">
+<meta property="article:modified_time" content="2023-08-30T11:01:07.131Z">
 <meta property="article:author" content="Mr.萌辛">
 <meta property="article:tag" content="系统调用">
 <meta property="article:tag" content="API">
@@ -179,14 +179,14 @@
                 <div class="category-count">2</div>
             </a>
         
+            <a class="category-link" href="/categories/%E5%86%85%E6%A0%B8/">
+                内核
+                <div class="category-count">8</div>
+            </a>
+        
             <a class="category-link" href="/categories/%E6%B1%87%E7%BC%96/">
                 汇编
                 <div class="category-count">2</div>
-            </a>
-        
-            <a class="category-link" href="/categories/%E5%86%85%E6%A0%B8/">
-                内核
-                <div class="category-count">5</div>
             </a>
         </div>
     </div>
@@ -198,7 +198,7 @@
   <div class="widget-wrap">
     <div class="widget">
       <h3 class="widget-title">标签</h3>
-      <ul class="widget-tag-list" itemprop="keywords"><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/API/" rel="tag">API</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E5%AF%84%E5%AD%98%E5%99%A8/" rel="tag">寄存器</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" rel="tag">系统调用</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E8%BF%9B%E5%88%B6/" rel="tag">进制</a></li></ul>
+      <ul class="widget-tag-list" itemprop="keywords"><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/API/" rel="tag">API</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E5%87%BD%E6%95%B0%E5%88%86%E6%9E%90/" rel="tag">函数分析</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E5%AF%84%E5%AD%98%E5%99%A8/" rel="tag">寄存器</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" rel="tag">系统调用</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E8%BF%9B%E5%88%B6/" rel="tag">进制</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B/" rel="tag">进程</a></li></ul>
     </div>
   </div>
 
@@ -210,9 +210,14 @@
       <h3 class="widget-title">归档</h3>
       
       
+        <a class="archive-link" href="/archives/2023/09 ">
+          九月 2023 
+          <div class="archive-count">2 </div>
+        </a>
+      
         <a class="archive-link" href="/archives/2023/08 ">
           八月 2023 
-          <div class="archive-count">10 </div>
+          <div class="archive-count">11 </div>
         </a>
       
     </div>
@@ -226,33 +231,33 @@
       <h3 class="widget-title">最新文章</h3>
       <ul>
         
-          <a class="recent-link" href="/2023/08/30/23.8.30SystemServiceTable/" title="通过SystemServiceTable找到对应函数" >
+          <a class="recent-link" href="/2023/09/03/23.9.3%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_KiFindReadyThread%E5%87%BD%E6%95%B0%E5%88%86%E6%9E%90/" title="KiFindReadyThread函数分析" >
+            <div class="recent-link-text">
+              KiFindReadyThread函数分析
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/09/01/23.8.31%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/" title="线程结构体" >
+            <div class="recent-link-text">
+              线程结构体
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/08/31/23.8.31%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_%E8%BF%9B%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/" title="进程结构体" >
+            <div class="recent-link-text">
+              进程结构体
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/08/30/23.8.30%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8_SystemServiceTable/" title="通过SystemServiceTable找到对应函数" >
             <div class="recent-link-text">
               通过SystemServiceTable找到对应函数
             </div>
           </a>
         
-          <a class="recent-link" href="/2023/08/30/23.8.30KiFastCallEntry/" title="KiFastCallEntry函数分析" >
+          <a class="recent-link" href="/2023/08/30/23.8.30%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8_KiFastCallEntry/" title="KiFastCallEntry函数分析" >
             <div class="recent-link-text">
               KiFastCallEntry函数分析
-            </div>
-          </a>
-        
-          <a class="recent-link" href="/2023/08/30/23.8.30KiSystemService/" title="KiSystemService函数分析" >
-            <div class="recent-link-text">
-              KiSystemService函数分析
-            </div>
-          </a>
-        
-          <a class="recent-link" href="/2023/08/29/23.8.29KUSER_SHARED_DATA%E7%BB%93%E6%9E%84/" title="KUSER_SHARED_DATA结构" >
-            <div class="recent-link-text">
-              KUSER_SHARED_DATA结构
-            </div>
-          </a>
-        
-          <a class="recent-link" href="/2023/08/28/23.8.28%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8_Api%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/" title="系统调用-Api执行流程" >
-            <div class="recent-link-text">
-              系统调用-Api执行流程
             </div>
           </a>
         
@@ -267,7 +272,7 @@
     <div id="content-body">
        
 
-<article id="post-23.8.30SystemServiceTable" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+<article id="post-23.8.30系统调用_SystemServiceTable" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   
     
    
@@ -378,7 +383,7 @@
 ServiceTable的地址 + 系统服务号 * 函数的大小<br>结果如下:<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/SystemServiceTable/OpenPrcoess%E5%86%85%E6%A0%B8%E5%87%BD%E6%95%B0%E5%9C%B0%E5%9D%80.png"><br>那么如何验证我们这个函数地址的是否正确呢?我能还是用到一个指令<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">u 8402dc8f</span><br></pre></td></tr></table></figure>
 结果如下:<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/SystemServiceTable/u.png"><br>&emsp;&emsp;通常情况下，当你在<code>WinDbg</code>中使用<code>u</code>命令来反汇编一个函数地址时，如果一切配置正确，该调试器会自动解析并显示函数的符号名。由于我的符号包遇到了一些问题，我额外使用了<code>u NtOpenProcess</code>命令。通过比较两次得到的结果，我发现它们的执行地址是相同的。这进一步证实了我们通过服务号查找得到的信息是准确无误的。</li>
 </ol>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h3><p>在API函数调用过程中，从用户模式（3环）切换到内核模式（0环），并找到相应的内核函数，可以说这个阶段的任务已经基本完成。然而，真正的调用流程并没有结束，因为执行完内核模式下的函数后，还需要返回到用户模式。这一部分涉及到APC（异步过程调用）的相关知识，因此在这里还无法做到完整展示。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h3><p>&emsp;&emsp;在API函数调用过程中，从用户模式（3环）切换到内核模式（0环），并找到相应的内核函数，可以说这个阶段的任务已经基本完成。然而，真正的调用流程并没有结束，因为执行完内核模式下的函数后，还需要返回到用户模式。这一部分涉及到APC（异步过程调用）的相关知识，因此在这里还无法做到完整展示。</p>
 
         
       </div>
@@ -391,16 +396,21 @@ ServiceTable的地址 + 系统服务号 * 函数的大小<br>结果如下:<br><i
   
     
 <nav id="article-nav">
-  <a class="article-nav-btn left  disabled "
+  <a class="article-nav-btn left "
+    
+      href="/2023/08/31/23.8.31%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_%E8%BF%9B%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/"
+      title="进程结构体"
      >
     <i class="fa-solid fa-angle-left"></i>
     <p class="title-text">
+      
+        进程结构体
         
     </p>
   </a>
   <a class="article-nav-btn right "
     
-      href="/2023/08/30/23.8.30KiFastCallEntry/"
+      href="/2023/08/30/23.8.30%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8_KiFastCallEntry/"
       title="KiFastCallEntry函数分析"
      >
 

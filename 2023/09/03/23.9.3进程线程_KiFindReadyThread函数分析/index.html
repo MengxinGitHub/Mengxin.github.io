@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+
+<html theme="dark" showBanner="true" hasBanner="true" > 
+<link href="/fontawesome/css/fontawesome.css" rel="stylesheet">
+<link href="/fontawesome/css/brands.css" rel="stylesheet">
+<link href="/fontawesome/css/solid.css" rel="stylesheet">
+<script src="/js/color.global.min.js" ></script>
+<script src="/js/load-settings.js" ></script>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=true"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'true');
+</script>
+<!-- End Google Analytics -->
+
+  
+  <title>KiFindReadyThread函数分析 | Mr.萌辛</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="KiFindReadyThread参数    &amp;emsp;&amp;emsp;从ida中可以看到KiFindReadyThread他是有三个参数的,但是看到他的参数解析的时候,发现它用堆栈传递参数的时候只用了esp+8和esp+C那么它还有一个参数呢?那么我们这个时候可以猜测它另一个参数是用的寄存器传递参数,那么我们就得看看他还有一个参数使用什么传递的!&amp;emsp;&amp;emsp;看到这个地方的时候,其实就可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KiFindReadyThread函数分析">
+<meta property="og:url" content="https://blog.mxlink.top/2023/09/03/23.9.3%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_KiFindReadyThread%E5%87%BD%E6%95%B0%E5%88%86%E6%9E%90/">
+<meta property="og:site_name" content="Mr.萌辛">
+<meta property="og:description" content="KiFindReadyThread参数    &amp;emsp;&amp;emsp;从ida中可以看到KiFindReadyThread他是有三个参数的,但是看到他的参数解析的时候,发现它用堆栈传递参数的时候只用了esp+8和esp+C那么它还有一个参数呢?那么我们这个时候可以猜测它另一个参数是用的寄存器传递参数,那么我们就得看看他还有一个参数使用什么传递的!&amp;emsp;&amp;emsp;看到这个地方的时候,其实就可">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8F%82%E6%95%B0.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8F%82%E6%95%B02.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%9B%9E%E6%BA%AF.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%9B%9E%E6%BA%AF2.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84Kpcr.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/ReadySummary.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/fs20.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/prcb.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%901.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%90%E4%BA%8C.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%903.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%904.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%905.png">
+<meta property="article:published_time" content="2023-09-03T05:54:02.718Z">
+<meta property="article:modified_time" content="2023-09-04T09:21:10.896Z">
+<meta property="article:author" content="Mr.萌辛">
+<meta property="article:tag" content="线程">
+<meta property="article:tag" content="函数分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8F%82%E6%95%B0.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Mr.萌辛" type="application/atom+xml">
+  
+  
+    <link rel="icon" media="(prefers-color-scheme: light)" href="/images/favicon-light-32.png" sizes="32x32">
+    <link rel="icon" media="(prefers-color-scheme: light)" href="/images/favicon-light-128.png" sizes="128x128">
+    <link rel="icon" media="(prefers-color-scheme: light)" href="/images/favicon-light-180.png" sizes="180x180">
+    <link rel="icon" media="(prefers-color-scheme: light)" href="/images/favicon-light-192.png" sizes="192x192">
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="/images/favicon-dark-32.png" sizes="32x32">
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="/images/favicon-dark-128.png" sizes="128x128">
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="/images/favicon-dark-180.png" sizes="180x180">
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="/images/favicon-dark-192.png" sizes="192x192">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  
+  
+    
+<div id="banner" class="">
+  <img src="/assets/%E5%B0%8F%E4%B8%91%E6%A8%AA%E5%B9%85.jpg" itemprop="image">
+  <div id="banner-dim"></div>
+</div>
+ 
+   
+  <div id="main-grid" class="shadow   ">
+    <div id="nav" class=""  >
+      <navbar id="navbar">
+  <nav id="title-nav">
+    <a href="/">
+      <div id="vivia-logo">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div>Mr.萌辛 </div>
+    </a>
+  </nav>
+  <nav id="main-nav">
+    
+      <a class="main-nav-link" href="/">Home</a>
+    
+      <a class="main-nav-link" href="/archives">Archives</a>
+    
+      <a class="main-nav-link" href="/about">About</a>
+    
+  </nav>
+  <nav id="sub-nav">
+    <a id="theme-btn" class="nav-icon">
+      <span class="material-symbols-rounded light-mode-icon">wb_sunny</span>
+      <span class="material-symbols-rounded dark-mode-icon">dark_mode</span>
+    </a>
+    
+      <a id="nav-rss-link" class="nav-icon mobile-hide" href="/atom.xml" title="RSS 订阅">
+        <span class="material-symbols-rounded rss">rss_feed</span>
+      </a>
+    
+    <a id="nav-search-btn" class="nav-icon" title="搜索" style="display: none;">
+      <span class="material-symbols-rounded">search</span>
+    </a>
+    <div id="nav-menu-btn" class="nav-icon">
+      <span class="material-symbols-rounded">menu</span>
+    </div>
+  </nav>
+</navbar>
+<div id="nav-dropdown" class="hidden">
+  <div id="dropdown-link-list">
+    
+      <a class="nav-dropdown-link" href="/">Home</a>
+    
+      <a class="nav-dropdown-link" href="/archives">Archives</a>
+    
+      <a class="nav-dropdown-link" href="/about">About</a>
+    
+    
+      <a class="nav-dropdown-link" href="/atom.xml" title="RSS 订阅">RSS</a>
+     
+    </div>
+</div>
+<script>
+  let dropdownBtn = document.getElementById("nav-menu-btn");
+  let dropdownEle = document.getElementById("nav-dropdown");
+  dropdownBtn.onclick = function() {
+    dropdownEle.classList.toggle("hidden");
+  }
+</script>
+    </div>
+    <div id="sidebar-wrapper">
+      <sidebar id="sidebar">
+  
+    <div class="widget-wrap">
+  <div class="info-card">
+    <div class="avatar">
+      
+        <image src=/assets/%E5%A4%B4%E5%83%8F.jpg></image>
+      
+      <div class="img-dim"></div>
+    </div>
+    <div class="info">
+      <div class="username">Mr.萌辛 </div>
+      <div class="dot"></div>
+      <div class="subtitle">拿命学逆向 </div>
+      <div class="link-list">
+        
+          <a class="link-btn" target="_blank" rel="noopener" href="https://twitter.com" title="Twitter"><i class="fa-brands fa-twitter"></i></a>
+        
+          <a class="link-btn" target="_blank" rel="noopener" href="https://store.steampowered.com" title="Steam"><i class="fa-brands fa-steam"></i></a>
+        
+          <a class="link-btn" target="_blank" rel="noopener" href="https://github.com" title="GitHub"><i class="fa-brands fa-github"></i></a>
+         
+      </div>  
+    </div>
+  </div>
+</div>
+
+  
+  <div class="sticky">
+    
+      
+
+
+  <div class="widget-wrap">
+    <div class="widget">
+      <h3 class="widget-title">分类</h3>
+      <div class="category-box">
+            <a class="category-link" href="/categories/%E8%BF%9B%E5%88%B6/">
+                进制
+                <div class="category-count">2</div>
+            </a>
+        
+            <a class="category-link" href="/categories/%E5%86%85%E6%A0%B8/">
+                内核
+                <div class="category-count">8</div>
+            </a>
+        
+            <a class="category-link" href="/categories/%E6%B1%87%E7%BC%96/">
+                汇编
+                <div class="category-count">2</div>
+            </a>
+        </div>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap">
+    <div class="widget">
+      <h3 class="widget-title">标签</h3>
+      <ul class="widget-tag-list" itemprop="keywords"><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/API/" rel="tag">API</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E5%87%BD%E6%95%B0%E5%88%86%E6%9E%90/" rel="tag">函数分析</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E5%AF%84%E5%AD%98%E5%99%A8/" rel="tag">寄存器</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" rel="tag">系统调用</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E8%BF%9B%E5%88%B6/" rel="tag">进制</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B/" rel="tag">进程</a></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap">
+    <div class="widget">
+      <h3 class="widget-title">归档</h3>
+      
+      
+        <a class="archive-link" href="/archives/2023/09 ">
+          九月 2023 
+          <div class="archive-count">2 </div>
+        </a>
+      
+        <a class="archive-link" href="/archives/2023/08 ">
+          八月 2023 
+          <div class="archive-count">11 </div>
+        </a>
+      
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap">
+    <div class="widget">
+      <h3 class="widget-title">最新文章</h3>
+      <ul>
+        
+          <a class="recent-link" href="/2023/09/03/23.9.3%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_KiFindReadyThread%E5%87%BD%E6%95%B0%E5%88%86%E6%9E%90/" title="KiFindReadyThread函数分析" >
+            <div class="recent-link-text">
+              KiFindReadyThread函数分析
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/09/01/23.8.31%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/" title="线程结构体" >
+            <div class="recent-link-text">
+              线程结构体
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/08/31/23.8.31%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_%E8%BF%9B%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/" title="进程结构体" >
+            <div class="recent-link-text">
+              进程结构体
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/08/30/23.8.30%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8_SystemServiceTable/" title="通过SystemServiceTable找到对应函数" >
+            <div class="recent-link-text">
+              通过SystemServiceTable找到对应函数
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/08/30/23.8.30%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8_KiFastCallEntry/" title="KiFastCallEntry函数分析" >
+            <div class="recent-link-text">
+              KiFastCallEntry函数分析
+            </div>
+          </a>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+  </div>
+</sidebar>
+    </div>
+    <div id="content-body">
+       
+
+<article id="post-23.9.3进程线程_KiFindReadyThread函数分析" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  
+    
+   
+  <div class="article-inner">
+    <div class="article-main">
+      <header class="article-header">
+        
+<div class="main-title-bar">
+  <div class="main-title-dot"></div>
+  
+    
+      <h1 class="p-name article-title" itemprop="headline name">
+        KiFindReadyThread函数分析
+      </h1>
+    
+  
+</div>
+
+        <div class='meta-info-bar'>
+          <div class="meta-info">
+  <time class="dt-published" datetime="2023-09-03T05:54:02.718Z" itemprop="datePublished">2023年09月03日</time>
+</div>
+          <div class="need-seperator meta-info">
+            <div class="meta-cate-flex">
+  
+  <a class="meta-cate-link" href="/categories/%E5%86%85%E6%A0%B8/">内核</a>
+   
+</div>
+  
+          </div>
+          <div class="wordcount need-seperator meta-info">
+            1.8k 词 
+          </div>
+        </div>
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%87%BD%E6%95%B0%E5%88%86%E6%9E%90/" rel="tag">函数分析</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li></ul>
+
+      </header>
+      <div class="e-content article-entry" itemprop="articleBody">
+        
+          <h1 id="KiFindReadyThread"><a href="#KiFindReadyThread" class="headerlink" title="KiFindReadyThread"></a>KiFindReadyThread</h1><h2 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h2><p><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8F%82%E6%95%B0.png"><br>    &emsp;&emsp;从ida中可以看到<code>KiFindReadyThread</code>他是有三个参数的,但是看到他的参数解析的时候,发现它用堆栈传递参数的时候只用了<code>esp+8</code>和<code>esp+C</code>那么它还有一个参数呢?那么我们这个时候可以猜测它另一个参数是用的寄存器传递参数,那么我们就得看看他还有一个参数使用什么传递的!<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8F%82%E6%95%B02.png"><br>&emsp;&emsp;看到这个地方的时候,其实就可以判断他的另一个参数是由<code>eax</code>来传递参数了,因为可以看到<code> mov esi,eax</code>执行之前它并没有保存<code>eax</code>寄存器而是直接进行使用的,通过这一点就可以简单的判断,他是由<code>eax</code>来进行传递参数的.那么之后我们是不是要去判断一下,函数<code>KiFindReadyThread</code>他的值分别代表的是什么呢?我们通过向上层回溯来追一个他的三个参数分别代表的是什么.<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%9B%9E%E6%BA%AF.png"><br>&emsp;&emsp;这里我们选择第二个<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%9B%9E%E6%BA%AF2.png"><br>&emsp;&emsp;可以看到在调用<code>KiFindReadyThread</code>之前<code>edi</code>,<code>esi</code>是通过堆栈传递的,而<code>eax</code>是来源于<code>[edi+0x31ec]</code>,那么我们先从<code>eax</code>下手,看看他的值是啥,我们继续上上追溯.<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84Kpcr.png"><br>&emsp;&emsp;可以发现最终我们找到了<code>KiProcessorBlock</code>而<code>eax</code>&#x3D;&#x3D;<code>KiProcessorBlock+0x31ec</code>,就是<code>kprcb+0x31ec</code>的位置,这个时候我们就可以去,结构体中找找<code>0x31ec</code>的位置是啥!<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/ReadySummary.png"><br>&emsp;&emsp;这样我们就得出了<code>eax</code>就是<code>ReadySummary</code>(就绪位图),同时我们也得知了<code>edi</code>使我们的<code>KiProcessorBlock</code>(_KPRCB),这样我们就确定了,两个参数分别代表着什么,那么最后值剩下了<code>esi</code>,我们继续向上追溯.<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/fs20.png"><br>&emsp;&emsp;通过几层的追溯,最总发现<code>esi</code>来自于<code>fs:20h</code>可知fs在内核中指向了<code>KPCR</code>那么我们可以看看他偏移<code>0x20</code>的地方是什么,<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/prcb.png"><br>&emsp;&emsp;可以发现在<code>kpcr+0x20</code>的地方是<code>Prcb</code>,而prcb又是指向扩展结构体<code>KPRCB</code>,这个时候就分析除了函数<code>KiFindReadyThread</code>所有的参数!</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[eax]=KiProcessorBlock[i].kprcb.ReadySummary(就绪位图)</span><br><span class="line">[esp+0x8] = KiProcessorBlock[i].kprcb</span><br><span class="line">[esp+0xc] = KPRCB</span><br></pre></td></tr></table></figure>
+
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>&emsp;&emsp;分析玩参数后我们就要着手分析函数<code>KiFindReadyThread</code>实现的功能了<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%901.png"><br>&emsp;&emsp;还是我们常见的提升堆栈,保存易变寄存器!<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%90%E4%BA%8C.png"><br>&emsp;&emsp;个人觉得函数<code>KiFindReadyThread</code>最重点的部分就在这一段代码中,下面是详细的解释👇</p>
+<ol>
+<li><p><code>mov ecx, [ebp+arg_4]</code>: 这个指令将 <code>ebp+arg_4</code>（即第五个参数或者局部变量，取决于调用约定和上下文）的值移动到 <code>ecx</code> 寄存器。这个值是 <code>kprcb</code>，</p>
+</li>
+<li><p><code>bsr eax, esi</code>: 这个指令找到 <code>esi</code>（就绪位图 <code>ReadySummary</code>）中最高位的位置，并将该位置存储到 <code>eax</code> 寄存器。</p>
+</li>
+<li><p><code>xor esi, ds:_KiMask32Array[eax*4]</code>: 这个指令从 <code>_KiMask32Array</code> 数组中获取一个值（通过使用 <code>eax</code> 作为索引），然后用这个值和 <code>esi</code>（就绪位图）进行 XOR 操作，从而清除对应的最高优先级位。</p>
+</li>
+<li><p><code>lea edi, [ecx+eax*8+_KPRCB.DispatcherReadyListHead]</code>: 这个指令计算一个地址，并将其存储到 <code>edi</code> 寄存器。这个地址是用于找到对应优先级的线程链表。</p>
+</li>
+<li><p><code>mov ecx, [edi]</code>: 这个指令将 <code>edi</code> 指向的值（是线程的 <code>SwapListEntry</code>）移动到 <code>ecx</code> 寄存器。</p>
+</li>
+<li><p><code>mov [ebp+var_4], eax</code>: 这个指令将 <code>eax</code>（就绪位图的最高位的index）存储到一个局部变量（<code>var_4</code>）。</p>
+</li>
+</ol>
+<p>&emsp;&emsp;总体来说，这段代码的作用是找到就绪位图中优先级最高的线程，并进行一些与该线程相关的操作。</p>
+<p><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%903.png"><br>&emsp;&emsp;这一块主要是线程亲和性的知识,我们在买cpu的时候都会解除到<strong>几核心几线程</strong>,比如说4核心8线程这意味着该CPU拥有4个物理核心，并且能够同时处理8个逻辑线程,在这样的环境下，线程亲和性成为一个不可或缺的优化手段。他规定了那个线程能运行在哪个核心上.<br>&emsp;&emsp;这里的反汇编代码就是在判断当前的就绪线程,能不能运行在当前的核心上.<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%904.png"><br>&emsp;&emsp;在处理线程亲和性后，如果判定该线程不能在当前的CPU核心执行，代码会进一步分析。首先，代码会检查<strong>就绪线程链表</strong>中是否还存在其他就绪状态的线程。其次，它也会检查<strong>就绪位图</strong>以确认是否有其他可运行的线程。如果两者都没有，代码会<strong>直接设置返回值</strong>并执行返回操作。</p>
+<p><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/KifindReadyThread/%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%905.png"><br>&emsp;&emsp;如果当前通过线程亲和性的判断就会执行到这里.这里的反汇编代码线判断了链表是否为空,其次取出<code>_KPRCB.Number</code>存到<code>_KTHREAD.NextProcessor</code>中就执行到返回了!而这个时候返回的<code>eax</code>就是要执行的<code>kthread</code>的结构体地址了!</p>
+<h2 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h2><p>&emsp;&emsp;通过上面的分析我们同时也很清晰的能知道它在成功和失败的时候返回的是什么结果,结论如下</p>
+<ol>
+<li>成功:返回<code>_kthread</code>结构体地址</li>
+<li>失败:清空<code>eax</code>返回<code>0</code></li>
+</ol>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>从IDA的分析中，我们可以看出<code>KiFindReadyThread</code>函数接收三个参数。不过有趣的是，函数使用堆栈来传递两个参数，即<code>esp+8</code>和<code>esp+C</code>，那么第三个参数是如何传递的呢？细致观察后发现，第三个参数实际上是通过<code>eax</code>寄存器传递的。简单来说，函数的三个参数解析如下：</p>
+<ul>
+<li><code>[eax]</code> &#x3D; <code>KiProcessorBlock[i].kprcb.ReadySummary</code>（就绪位图）</li>
+<li><code>[esp+0x8]</code> &#x3D; <code>KiProcessorBlock[i].kprcb</code></li>
+<li><code>[esp+0xC]</code> &#x3D; <code>KPRCB</code></li>
+</ul>
+<h2 id="执行流程"><a href="#执行流程" class="headerlink" title="执行流程"></a>执行流程</h2><p><code>KiFindReadyThread</code>的核心功能主要在以下几个方面：</p>
+<h3 id="1-线程选择"><a href="#1-线程选择" class="headerlink" title="1. 线程选择"></a>1. 线程选择</h3><p>函数首先会找到就绪位图中优先级最高的线程，并准备执行与该线程相关的操作。</p>
+<h3 id="2-线程亲和性判断"><a href="#2-线程亲和性判断" class="headerlink" title="2. 线程亲和性判断"></a>2. 线程亲和性判断</h3><p>该部分代码会检查一个就绪线程是否可以在当前的CPU核心上运行。线程亲和性是一种优化手段，它定义了哪个线程能在哪个核心上运行。</p>
+<h3 id="3-备选方案"><a href="#3-备选方案" class="headerlink" title="3. 备选方案"></a>3. 备选方案</h3><p>如果发现当前选中的线程不能在此核心上运行，函数将会查找<strong>就绪线程链表</strong>和<strong>就绪位图</strong>中是否还有其他就绪的线程。如果没有，会<strong>直接设置返回值</strong>并返回。</p>
+<h3 id="4-最终决策"><a href="#4-最终决策" class="headerlink" title="4. 最终决策"></a>4. 最终决策</h3><p>如果线程通过了亲和性的判断，代码会进一步执行，并最终确定要运行的<code>kthread</code>结构体地址。</p>
+<h3 id="5-返回值"><a href="#5-返回值" class="headerlink" title="5. 返回值"></a>5. 返回值</h3><p>函数的返回值主要有两种可能：</p>
+<ol>
+<li><strong>成功</strong>: 返回对应的<code>_kthread</code>结构体地址。</li>
+<li><strong>失败</strong>: <code>eax</code>被清空，返回<code>0</code>。</li>
+</ol>
+<p>这样，我们就全面解析了<code>KiFindReadyThread</code>函数的参数传递方式、主要功能，以及可能的返回值。</p>
+
+        
+      </div>
+
+         
+    </div>
+    
+     
+  </div>
+  
+    
+<nav id="article-nav">
+  <a class="article-nav-btn left  disabled "
+     >
+    <i class="fa-solid fa-angle-left"></i>
+    <p class="title-text">
+        
+    </p>
+  </a>
+  <a class="article-nav-btn right "
+    
+      href="/2023/09/01/23.8.31%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/"
+      title="线程结构体"
+     >
+
+    <p class="title-text">
+      
+        线程结构体
+        
+    </p>
+    <i class="fa-solid fa-angle-right"></i>
+  </a>
+</nav>
+
+
+  
+</article>
+
+
+  
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <div id="comment-card" class="comment-card">
+    <div class="main-title-bar">
+      <div class="main-title-dot"></div>
+      <div class="main-title">留言 </div>
+    </div>
+    <div id="vcomments"></div>
+  </div>
+  <script>
+      new Valine({"enable":true,"appId":"9rQGfcAqFLYp5q7xBw6nqlUn-gzGzoHsz","appKey":"4ybh6Op8zAdpYdjp6zeJ4tZR","placeholder":"尽情发言吧","pageSize":10,"highlight":true,"serverURLs":null,"el":"#vcomments"});
+  </script>
+ 
+    </div>
+    <div id="footer-wrapper">
+      <footer id="footer">
+  
+  <div id="footer-info" class="inner">
+    
+      <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src="https://img.shields.io/badge/Copyright-BY--Mengxin%204.0-d42328?style=flat&amp;logo=Claris"></a>
+    
+    &copy; 2023 Mr.萌辛<br>
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & Theme <a target="_blank" rel="noopener" href="https://github.com/saicaca/hexo-theme-vivia">Vivia</a>
+  </div>
+</footer>
+
+    </div>
+    <div class="back-to-top-wrapper">
+    <button id="back-to-top-btn" class="back-to-top-btn" onclick="topFunction()">
+        <span class="material-symbols-rounded">keyboard_arrow_up</span>
+    </button>
+</div>
+
+<script>
+    function topFunction() {
+        window.scroll({ top: 0, behavior: 'smooth' });
+    }
+    let btn = document.getElementById('back-to-top-btn');
+    function scrollFunction() {
+        if (document.body.scrollTop > 600 || document.documentElement.scrollTop > 600) {
+            btn.style.opacity = 1;
+        } else {
+            btn.style.opacity = 0;
+        }
+    }
+    window.onscroll = function() {
+        scrollFunction();
+    }
+</script>
+
+  </div>
+  <script src="/js/light-dark-switch.js"></script>
+</body>
+</html>

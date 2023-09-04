@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+
+
+<html theme="dark" showBanner="true" hasBanner="true" > 
+<link href="/fontawesome/css/fontawesome.css" rel="stylesheet">
+<link href="/fontawesome/css/brands.css" rel="stylesheet">
+<link href="/fontawesome/css/solid.css" rel="stylesheet">
+<script src="/js/color.global.min.js" ></script>
+<script src="/js/load-settings.js" ></script>
+<head>
+  <meta charset="utf-8">
+  
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=true"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'true');
+</script>
+<!-- End Google Analytics -->
+
+  
+  <title>线程结构体 | Mr.萌辛</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="线程结构体&amp;emsp;&amp;emsp;在操作系统中每一条进程都会有至少一条线程或者多条线程,如果一条进程下他的所有线程被销毁了,那么这条进程也会被销毁.线程同进程一样,它也有一个结构体看来维护线程的一些信息.  线程对应结构体 R3 _TEP -FS[0] R0 ETHREAD &#x2F;KTHREAD  PsGetCurrentThread  PsGetCurrentThreadId  PsLoo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线程结构体">
+<meta property="og:url" content="https://blog.mxlink.top/2023/09/01/23.8.31%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/">
+<meta property="og:site_name" content="Mr.萌辛">
+<meta property="og:description" content="线程结构体&amp;emsp;&amp;emsp;在操作系统中每一条进程都会有至少一条线程或者多条线程,如果一条进程下他的所有线程被销毁了,那么这条进程也会被销毁.线程同进程一样,它也有一个结构体看来维护线程的一些信息.  线程对应结构体 R3 _TEP -FS[0] R0 ETHREAD &#x2F;KTHREAD  PsGetCurrentThread  PsGetCurrentThreadId  PsLoo">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/ETHREAD.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/KTHREAD.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/%E6%A0%88%E4%BF%A1%E6%81%AF.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/TEB.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/WaitListEntry.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/BasePriority.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/WaitBlock.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/%E6%9C%8D%E5%8A%A1%E8%A1%A8.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/%E5%85%88%E5%89%8D%E6%A8%A1%E5%BC%8F.png">
+<meta property="og:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/ThreadListEntry.png">
+<meta property="article:published_time" content="2023-09-01T07:12:31.495Z">
+<meta property="article:modified_time" content="2023-09-01T08:47:28.669Z">
+<meta property="article:author" content="Mr.萌辛">
+<meta property="article:tag" content="进程">
+<meta property="article:tag" content="线程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.mxlink.top/assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/ETHREAD.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Mr.萌辛" type="application/atom+xml">
+  
+  
+    <link rel="icon" media="(prefers-color-scheme: light)" href="/images/favicon-light-32.png" sizes="32x32">
+    <link rel="icon" media="(prefers-color-scheme: light)" href="/images/favicon-light-128.png" sizes="128x128">
+    <link rel="icon" media="(prefers-color-scheme: light)" href="/images/favicon-light-180.png" sizes="180x180">
+    <link rel="icon" media="(prefers-color-scheme: light)" href="/images/favicon-light-192.png" sizes="192x192">
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="/images/favicon-dark-32.png" sizes="32x32">
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="/images/favicon-dark-128.png" sizes="128x128">
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="/images/favicon-dark-180.png" sizes="180x180">
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="/images/favicon-dark-192.png" sizes="192x192">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  
+  
+    
+<div id="banner" class="">
+  <img src="/assets/%E5%B0%8F%E4%B8%91%E6%A8%AA%E5%B9%85.jpg" itemprop="image">
+  <div id="banner-dim"></div>
+</div>
+ 
+   
+  <div id="main-grid" class="shadow   ">
+    <div id="nav" class=""  >
+      <navbar id="navbar">
+  <nav id="title-nav">
+    <a href="/">
+      <div id="vivia-logo">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div>Mr.萌辛 </div>
+    </a>
+  </nav>
+  <nav id="main-nav">
+    
+      <a class="main-nav-link" href="/">Home</a>
+    
+      <a class="main-nav-link" href="/archives">Archives</a>
+    
+      <a class="main-nav-link" href="/about">About</a>
+    
+  </nav>
+  <nav id="sub-nav">
+    <a id="theme-btn" class="nav-icon">
+      <span class="material-symbols-rounded light-mode-icon">wb_sunny</span>
+      <span class="material-symbols-rounded dark-mode-icon">dark_mode</span>
+    </a>
+    
+      <a id="nav-rss-link" class="nav-icon mobile-hide" href="/atom.xml" title="RSS 订阅">
+        <span class="material-symbols-rounded rss">rss_feed</span>
+      </a>
+    
+    <a id="nav-search-btn" class="nav-icon" title="搜索" style="display: none;">
+      <span class="material-symbols-rounded">search</span>
+    </a>
+    <div id="nav-menu-btn" class="nav-icon">
+      <span class="material-symbols-rounded">menu</span>
+    </div>
+  </nav>
+</navbar>
+<div id="nav-dropdown" class="hidden">
+  <div id="dropdown-link-list">
+    
+      <a class="nav-dropdown-link" href="/">Home</a>
+    
+      <a class="nav-dropdown-link" href="/archives">Archives</a>
+    
+      <a class="nav-dropdown-link" href="/about">About</a>
+    
+    
+      <a class="nav-dropdown-link" href="/atom.xml" title="RSS 订阅">RSS</a>
+     
+    </div>
+</div>
+<script>
+  let dropdownBtn = document.getElementById("nav-menu-btn");
+  let dropdownEle = document.getElementById("nav-dropdown");
+  dropdownBtn.onclick = function() {
+    dropdownEle.classList.toggle("hidden");
+  }
+</script>
+    </div>
+    <div id="sidebar-wrapper">
+      <sidebar id="sidebar">
+  
+    <div class="widget-wrap">
+  <div class="info-card">
+    <div class="avatar">
+      
+        <image src=/assets/%E5%A4%B4%E5%83%8F.jpg></image>
+      
+      <div class="img-dim"></div>
+    </div>
+    <div class="info">
+      <div class="username">Mr.萌辛 </div>
+      <div class="dot"></div>
+      <div class="subtitle">拿命学逆向 </div>
+      <div class="link-list">
+        
+          <a class="link-btn" target="_blank" rel="noopener" href="https://twitter.com" title="Twitter"><i class="fa-brands fa-twitter"></i></a>
+        
+          <a class="link-btn" target="_blank" rel="noopener" href="https://store.steampowered.com" title="Steam"><i class="fa-brands fa-steam"></i></a>
+        
+          <a class="link-btn" target="_blank" rel="noopener" href="https://github.com" title="GitHub"><i class="fa-brands fa-github"></i></a>
+         
+      </div>  
+    </div>
+  </div>
+</div>
+
+  
+  <div class="sticky">
+    
+      
+
+
+  <div class="widget-wrap">
+    <div class="widget">
+      <h3 class="widget-title">分类</h3>
+      <div class="category-box">
+            <a class="category-link" href="/categories/%E8%BF%9B%E5%88%B6/">
+                进制
+                <div class="category-count">2</div>
+            </a>
+        
+            <a class="category-link" href="/categories/%E5%86%85%E6%A0%B8/">
+                内核
+                <div class="category-count">8</div>
+            </a>
+        
+            <a class="category-link" href="/categories/%E6%B1%87%E7%BC%96/">
+                汇编
+                <div class="category-count">2</div>
+            </a>
+        </div>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap">
+    <div class="widget">
+      <h3 class="widget-title">标签</h3>
+      <ul class="widget-tag-list" itemprop="keywords"><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/API/" rel="tag">API</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E5%87%BD%E6%95%B0%E5%88%86%E6%9E%90/" rel="tag">函数分析</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E5%AF%84%E5%AD%98%E5%99%A8/" rel="tag">寄存器</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" rel="tag">系统调用</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E8%BF%9B%E5%88%B6/" rel="tag">进制</a></li><li class="widget-tag-list-item"><a class="widget-tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B/" rel="tag">进程</a></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap">
+    <div class="widget">
+      <h3 class="widget-title">归档</h3>
+      
+      
+        <a class="archive-link" href="/archives/2023/09 ">
+          九月 2023 
+          <div class="archive-count">2 </div>
+        </a>
+      
+        <a class="archive-link" href="/archives/2023/08 ">
+          八月 2023 
+          <div class="archive-count">11 </div>
+        </a>
+      
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap">
+    <div class="widget">
+      <h3 class="widget-title">最新文章</h3>
+      <ul>
+        
+          <a class="recent-link" href="/2023/09/03/23.9.3%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_KiFindReadyThread%E5%87%BD%E6%95%B0%E5%88%86%E6%9E%90/" title="KiFindReadyThread函数分析" >
+            <div class="recent-link-text">
+              KiFindReadyThread函数分析
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/09/01/23.8.31%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/" title="线程结构体" >
+            <div class="recent-link-text">
+              线程结构体
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/08/31/23.8.31%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_%E8%BF%9B%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/" title="进程结构体" >
+            <div class="recent-link-text">
+              进程结构体
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/08/30/23.8.30%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8_SystemServiceTable/" title="通过SystemServiceTable找到对应函数" >
+            <div class="recent-link-text">
+              通过SystemServiceTable找到对应函数
+            </div>
+          </a>
+        
+          <a class="recent-link" href="/2023/08/30/23.8.30%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8_KiFastCallEntry/" title="KiFastCallEntry函数分析" >
+            <div class="recent-link-text">
+              KiFastCallEntry函数分析
+            </div>
+          </a>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+  </div>
+</sidebar>
+    </div>
+    <div id="content-body">
+       
+
+<article id="post-23.8.31进程线程_线程结构体" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  
+    
+   
+  <div class="article-inner">
+    <div class="article-main">
+      <header class="article-header">
+        
+<div class="main-title-bar">
+  <div class="main-title-dot"></div>
+  
+    
+      <h1 class="p-name article-title" itemprop="headline name">
+        线程结构体
+      </h1>
+    
+  
+</div>
+
+        <div class='meta-info-bar'>
+          <div class="meta-info">
+  <time class="dt-published" datetime="2023-09-01T07:12:31.495Z" itemprop="datePublished">2023年09月01日</time>
+</div>
+          <div class="need-seperator meta-info">
+            <div class="meta-cate-flex">
+  
+  <a class="meta-cate-link" href="/categories/%E5%86%85%E6%A0%B8/">内核</a>
+   
+</div>
+  
+          </div>
+          <div class="wordcount need-seperator meta-info">
+            1k 词 
+          </div>
+        </div>
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B/" rel="tag">进程</a></li></ul>
+
+      </header>
+      <div class="e-content article-entry" itemprop="articleBody">
+        
+          <h1 id="线程结构体"><a href="#线程结构体" class="headerlink" title="线程结构体"></a>线程结构体</h1><p>&emsp;&emsp;在操作系统中每一条进程都会有至少一条线程或者多条线程,如果一条进程下他的所有线程被销毁了,那么这条进程也会被销毁.线程同进程一样,它也有一个结构体看来维护线程的一些信息.</p>
+<ol>
+<li>线程对应结构体<ul>
+<li>R3 _TEP -FS[0]</li>
+<li>R0 ETHREAD &#x2F;KTHREAD  PsGetCurrentThread  PsGetCurrentThreadId  PsLookupThreadByThreadId</li>
+</ul>
+</li>
+<li>线程一定是运行在某个进程中的(R3 程序默认运行在创建线程进程中 ,R0 如果不指定进程默认运行在 System 进程中)</li>
+<li>内核线程堆栈  _KTRAP_FRAME -KTSS.ESP0</li>
+<li>线程运行在CPU核心上,假设CPU只有一个核,也就意味着当前操作系统同时最多可以运行一条线程,通过不停切换线程来实现并行</li>
+<li>进程核心为CR3,通过CR3可以找到当前进程下所有数据,CPU没有进程概念,当一个进程下所有线程都销毁时,操作系统会释放进程</li>
+</ol>
+<h2 id="查看线程结构体-ETHREAD"><a href="#查看线程结构体-ETHREAD" class="headerlink" title="查看线程结构体(ETHREAD)"></a>查看线程结构体(ETHREAD)</h2><p>&emsp;&emsp;在双机调试的环境下我们可以在<code>windbg</code>中输入以下👇命令来查看线程结构体</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dt _ETHREAD</span><br></pre></td></tr></table></figure>
+<p>因为结构体中的成员太多,我就只截取一部分,结果如下👇.<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/ETHREAD.png"></p>
+<h2 id="主要字段和用途"><a href="#主要字段和用途" class="headerlink" title="主要字段和用途"></a>主要字段和用途</h2><ol>
+<li><p><strong>Tcb (Thread Control Block)</strong>: 线程控制块</p>
+<ul>
+<li><strong>简单用途</strong>：记录线程的各种信息。</li>
+<li><strong>功能</strong>：任务调度，线程管理。</li>
+<li><strong>windbg命令</strong>：<code>dt _KTHREAD</code></li>
+<li><strong>图解</strong>：<br> <img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/KTHREAD.png"></li>
+</ul>
+</li>
+<li><p><strong>Header</strong>: 头信息</p>
+<ul>
+<li><strong>简单用途</strong>：结构体内若包含_DISPATCHER_HEADER这个数据类型，说明这是一个可等待对象.</li>
+<li><strong>功能</strong>：初始化和识别线程。</li>
+</ul>
+</li>
+<li><p><strong>InitialStack&#x2F;StackLimit&#x2F;KernelStack</strong>: 栈信息</p>
+<ul>
+<li><strong>简单用途</strong>：保存程序运行时需要的临时数据。</li>
+<li><strong>功能</strong>：管理线程的栈空间。</li>
+<li><strong>图解</strong>：<br> <img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/%E6%A0%88%E4%BF%A1%E6%81%AF.png"></li>
+</ul>
+</li>
+<li><p><strong>Teb (Thread Environment Block)</strong>: 线程环境块</p>
+<ul>
+<li><strong>简单用途</strong>：存储线程特有的信息。</li>
+<li><strong>windbg命令</strong>：<code>dt _TEB</code></li>
+<li><strong>功能</strong>：保存线程本地存储（TLS）和其他线程相关数据。</li>
+<li><strong>图解</strong>：<br> <img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/TEB.png"></li>
+</ul>
+</li>
+<li><p><strong>DebugActive</strong>: 调试活动标志</p>
+<ul>
+<li><strong>简单用途</strong>：标记该线程是否正在被调试。</li>
+<li><strong>功能</strong>：用于调试器交互。</li>
+</ul>
+</li>
+<li><p><strong>State</strong>: 线程状态</p>
+<ul>
+<li><strong>简单用途</strong>：标记线程是在运行、等待还是已经结束。</li>
+<li><strong>功能</strong>：任务调度。</li>
+</ul>
+</li>
+<li><p><strong>WaitListEntry&#x2F;SwapListEntry</strong>: 等待&#x2F;交换列表</p>
+<ul>
+<li><strong>简单用途</strong>：记录哪些资源线程正在等待。</li>
+<li><strong>功能</strong>：同步和任务调度。</li>
+<li><strong>图解</strong>：<br> <img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/WaitListEntry.png"></li>
+</ul>
+</li>
+<li><p><strong>BasePriority</strong>: 基础优先级</p>
+<ul>
+<li><strong>简单用途</strong>：确定哪个线程应该先运行。</li>
+<li><strong>功能</strong>：任务调度。</li>
+<li><strong>图解</strong>：<br> <img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/BasePriority.png"></li>
+</ul>
+</li>
+<li><p><strong>WaitBlock</strong>: 等待块</p>
+<ul>
+<li><strong>简单用途</strong>：用于存储线程在等待哪些事情。</li>
+<li><strong>功能</strong>：同步和阻塞线程。</li>
+<li><strong>图解</strong>：<br> <img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/WaitBlock.png"></li>
+</ul>
+</li>
+<li><p><strong>ServiceTable</strong>: 服务表</p>
+<ul>
+<li><strong>简单用途</strong>：一张表，列出该线程可以调用的系统服务。</li>
+<li><strong>功能</strong>：系统调用和权限管理。</li>
+<li><strong>图解</strong>：<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/%E6%9C%8D%E5%8A%A1%E8%A1%A8.png"></li>
+</ul>
+</li>
+<li><p><strong>TrapFrame</strong>:</p>
+<ul>
+<li><strong>简单用途</strong>：保存线程在中断或异常时的状态。</li>
+<li><strong>功能</strong>：错误处理和调试。</li>
+</ul>
+</li>
+<li><p><strong>PreviousMode</strong>: 上一个模式（用户&#x2F;内核）</p>
+<ul>
+<li><strong>简单用途</strong>：记录线程最后一次是在用户模式还是内核模式。</li>
+<li><strong>功能</strong>：权限和安全性检查。</li>
+<li><strong>图解</strong>：<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/%E5%85%88%E5%89%8D%E6%A8%A1%E5%BC%8F.png"></li>
+</ul>
+</li>
+<li><p><strong>ThreadListEntry</strong>: 线程列表入口</p>
+<ul>
+<li><strong>简单用途</strong>：将这个线程与其他线程连接起来。</li>
+<li><strong>功能</strong>：线程管理和任务调度。</li>
+<li><strong>图解</strong>：<br><img src="/../assets/%E5%86%85%E6%A0%B8/%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/ThreadListEntry.png"></li>
+</ul>
+</li>
+<li><p><strong>APC (Asynchronous Procedure Calls) 相关字段</strong></p>
+<ul>
+<li><strong>简单用途</strong>：管理线程的异步调用。</li>
+<li><strong>功能</strong>：非同步执行代码块。</li>
+</ul>
+</li>
+<li><p><strong>Cid (Client ID)</strong>: 客户端标识</p>
+<ul>
+<li><p><strong>简单用途</strong>：唯一标识一个线程(包含了<code>UniqueProcess</code>,<code>UniqueThread</code>)。</p>
+</li>
+<li><p><strong>功能</strong>：线程追踪。</p>
+</li>
+<li><p><strong>UniqueProcess</strong>: 唯一进程标识</p>
+<ul>
+<li><strong>简单用途</strong>：用于唯一标识一个进程。</li>
+<li><strong>功能</strong>：当你需要知道某个操作是由哪个进程发起的时候，这个字段就派上用场了。</li>
+</ul>
+</li>
+<li><p><strong>UniqueThread</strong>: 唯一线程标识</p>
+<ul>
+<li><strong>简单用途</strong>：用于唯一标识一个线程。</li>
+<li><strong>功能</strong>：当你需要追踪或管理特定线程时，你可以用这个字段来找到它。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>ThreadProcess</strong>: 线程所属进程</p>
+<ul>
+<li><strong>简单用途</strong>：标记这个线程是哪个进程的一部分。</li>
+<li><strong>功能</strong>：进程和线程管理。</li>
+</ul>
+</li>
+</ol>
+
+        
+      </div>
+
+         
+    </div>
+    
+     
+  </div>
+  
+    
+<nav id="article-nav">
+  <a class="article-nav-btn left "
+    
+      href="/2023/09/03/23.9.3%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_KiFindReadyThread%E5%87%BD%E6%95%B0%E5%88%86%E6%9E%90/"
+      title="KiFindReadyThread函数分析"
+     >
+    <i class="fa-solid fa-angle-left"></i>
+    <p class="title-text">
+      
+        KiFindReadyThread函数分析
+        
+    </p>
+  </a>
+  <a class="article-nav-btn right "
+    
+      href="/2023/08/31/23.8.31%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B_%E8%BF%9B%E7%A8%8B%E7%BB%93%E6%9E%84%E4%BD%93/"
+      title="进程结构体"
+     >
+
+    <p class="title-text">
+      
+        进程结构体
+        
+    </p>
+    <i class="fa-solid fa-angle-right"></i>
+  </a>
+</nav>
+
+
+  
+</article>
+
+
+  
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <div id="comment-card" class="comment-card">
+    <div class="main-title-bar">
+      <div class="main-title-dot"></div>
+      <div class="main-title">留言 </div>
+    </div>
+    <div id="vcomments"></div>
+  </div>
+  <script>
+      new Valine({"enable":true,"appId":"9rQGfcAqFLYp5q7xBw6nqlUn-gzGzoHsz","appKey":"4ybh6Op8zAdpYdjp6zeJ4tZR","placeholder":"尽情发言吧","pageSize":10,"highlight":true,"serverURLs":null,"el":"#vcomments"});
+  </script>
+ 
+    </div>
+    <div id="footer-wrapper">
+      <footer id="footer">
+  
+  <div id="footer-info" class="inner">
+    
+      <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src="https://img.shields.io/badge/Copyright-BY--Mengxin%204.0-d42328?style=flat&amp;logo=Claris"></a>
+    
+    &copy; 2023 Mr.萌辛<br>
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & Theme <a target="_blank" rel="noopener" href="https://github.com/saicaca/hexo-theme-vivia">Vivia</a>
+  </div>
+</footer>
+
+    </div>
+    <div class="back-to-top-wrapper">
+    <button id="back-to-top-btn" class="back-to-top-btn" onclick="topFunction()">
+        <span class="material-symbols-rounded">keyboard_arrow_up</span>
+    </button>
+</div>
+
+<script>
+    function topFunction() {
+        window.scroll({ top: 0, behavior: 'smooth' });
+    }
+    let btn = document.getElementById('back-to-top-btn');
+    function scrollFunction() {
+        if (document.body.scrollTop > 600 || document.documentElement.scrollTop > 600) {
+            btn.style.opacity = 1;
+        } else {
+            btn.style.opacity = 0;
+        }
+    }
+    window.onscroll = function() {
+        scrollFunction();
+    }
+</script>
+
+  </div>
+  <script src="/js/light-dark-switch.js"></script>
+</body>
+</html>
